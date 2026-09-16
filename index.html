@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="theme-color" content="#0b1020" />
+    <meta name="description" content="一场关于勇士、王子、公主和一只猫的像素婚礼冒险。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="勇士、公主与那只猫" />
+    <meta property="og:description" content="接受任务，穿过森林，揭开城堡怪物的秘密。" />
+    <meta property="og:image" content="./share-card.png" />
+    <title>勇士、公主与那只猫</title>
+    <link rel="stylesheet" href="./styles.css?v=20260915-2" />
+  </head>
+  <body>
+    <!--
+      首版假设：
+      - 手机微信内置浏览器为主要环境，竖屏单手操作。
+      - 用户明确要求只先制作一版，并取消常驻状态栏。
+      - 当前缺少新人姓名、婚礼日期、地点和真实照片，统一从 game.js 的 GAME_CONFIG 替换。
+      - 首版使用原创 Canvas 像素画，不复刻任何具体红白机游戏资产。
+    -->
+    <main id="app" class="app" aria-live="polite">
+      <canvas id="game-canvas" width="216" height="384" aria-label="婚礼像素冒险游戏画面"></canvas>
+
+      <div class="screen-shade" aria-hidden="true"></div>
+      <div id="flash" class="flash" aria-hidden="true"></div>
+
+      <section id="scene-ui" class="scene-ui">
+        <div id="title-card" class="title-card hidden">
+          <p class="eyebrow">AN 8-BIT WEDDING QUEST</p>
+          <h1>营救公主</h1>
+        </div>
+
+        <div id="dialog" class="dialog hidden" role="dialog" aria-modal="false">
+          <p id="speaker" class="speaker"></p>
+          <p id="dialog-text" class="dialog-text"></p>
+          <span class="dialog-caret" aria-hidden="true"></span>
+        </div>
+
+        <form id="warrior-name-form" class="warrior-name-form hidden" aria-label="登记勇士名字">
+          <p class="warrior-name-heading">勇士，请登记你的名字</p>
+          <label for="warrior-name-input">你的名字</label>
+          <input id="warrior-name-input" type="text" maxlength="12" placeholder="请输入名字" autocomplete="nickname" required />
+          <button type="submit">确认</button>
+        </form>
+
+        <p id="prompt" class="prompt hidden"></p>
+
+        <div id="game-controls" class="game-controls hidden" aria-label="游戏操作">
+          <div class="move-controls">
+            <button type="button" data-control="left" aria-label="后退">◀</button>
+            <button type="button" data-control="right" aria-label="前进">▶</button>
+          </div>
+          <div class="action-controls">
+            <button type="button" data-control="jump">跳</button>
+            <button type="button" data-control="attack">击</button>
+          </div>
+        </div>
+
+        <div id="choices" class="choices hidden" aria-label="选择一件宝物">
+          <button class="choice" type="button" data-item="can">
+            <canvas width="40" height="40" aria-hidden="true"></canvas>
+            <span>猫罐头</span>
+          </button>
+          <button class="choice" type="button" data-item="food">
+            <canvas width="40" height="40" aria-hidden="true"></canvas>
+            <span>猫粮</span>
+          </button>
+          <button class="choice" type="button" data-item="egg">
+            <canvas width="40" height="40" aria-hidden="true"></canvas>
+            <span>鸡蛋</span>
+          </button>
+        </div>
+
+        <button id="primary-action" class="primary-action hidden" type="button">
+          <span id="primary-label">继续</span>
+        </button>
+
+        <button id="skip-action" class="skip-action" type="button">跳过剧情</button>
+      </section>
+
+      <section id="poster" class="poster hidden" aria-label="婚礼迎宾海报">
+        <div class="poster-stars" aria-hidden="true"></div>
+        <p class="poster-kicker">THE ADVENTURE CONTINUES</p>
+        <div class="poster-portrait" aria-hidden="true">
+          <canvas id="poster-canvas" width="160" height="144"></canvas>
+        </div>
+        <p class="poster-invite">诚邀你见证我们的婚礼</p>
+        <h2>
+          <span id="groom-name">新郎</span>
+          <b>×</b>
+          <span id="bride-name">新娘</span>
+        </h2>
+        <div class="poster-rule" aria-hidden="true"></div>
+        <p id="wedding-date" class="poster-date">2026 年 X 月 X 日</p>
+        <p id="wedding-venue" class="poster-venue">XX 酒店</p>
+        <p class="poster-ending">谢谢你，勇士。<br />新的故事，等你来见证。</p>
+        <div class="poster-actions">
+          <button id="share-action" class="poster-button primary" type="button">分享给朋友</button>
+          <button id="replay-action" class="poster-button" type="button">再玩一次</button>
+        </div>
+        <p id="share-tip" class="share-tip hidden">请点击微信右上角“···”，分享到朋友圈</p>
+      </section>
+
+      <div id="rotate-notice" class="rotate-notice hidden">
+        <p>请竖屏体验这段冒险</p>
+      </div>
+
+      <noscript>
+        <div class="noscript">需要启用 JavaScript 才能开始游戏。</div>
+      </noscript>
+    </main>
+
+    <script src="./game.js?v=20260916-14" defer></script>
+  </body>
+</html>
