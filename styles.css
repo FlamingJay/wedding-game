@@ -294,6 +294,24 @@ button {
   animation: prompt-pulse 1.2s steps(2, end) infinite;
 }
 
+.scene-ui.gameplay-layout .prompt {
+  position: absolute;
+  bottom: calc(76px + var(--safe-bottom));
+  margin: 0;
+}
+
+.scene-ui.castle-layout .dialog {
+  position: absolute;
+  bottom: calc(148px + var(--safe-bottom));
+  margin: 0;
+}
+
+.scene-ui.castle-layout .primary-action {
+  position: absolute;
+  bottom: calc(78px + var(--safe-bottom));
+  margin: 0;
+}
+
 .game-controls {
   position: absolute;
   right: 14px;

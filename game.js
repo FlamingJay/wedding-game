@@ -108,6 +108,7 @@ const state = {
   guardX: 0,
   guardDirection: -1,
   finisherStartedAt: 0,
+  treasureX: 0,
   controls: { left: false, right: false },
 };
 
@@ -138,6 +139,8 @@ function show(element, visible = true) {
 function resetUi() {
   sceneUi.classList.remove("briefing-layout");
   sceneUi.classList.remove("title-layout");
+  sceneUi.classList.remove("gameplay-layout");
+  sceneUi.classList.remove("castle-layout");
   show(titleCard, false);
   show(dialog, false);
   show(warriorNameForm, false);
@@ -267,6 +270,7 @@ function setScene(scene) {
   }
 
   if (scene === "forest") {
+    sceneUi.classList.add("gameplay-layout");
     state.playerX = 42;
     state.playerY = 0;
     state.playerVelocityY = 0;
@@ -278,6 +282,7 @@ function setScene(scene) {
   }
 
   if (scene === "guard") {
+    sceneUi.classList.add("gameplay-layout");
     state.guardHits = 0;
     state.playerX = 42;
     state.playerY = 0;
@@ -289,6 +294,7 @@ function setScene(scene) {
   }
 
   if (scene === "treasure") {
+    if (!state.treasureX) state.treasureX = W * 0.66;
     sound("open");
     setDialog("王子", "宝箱里没有宝剑，只有三件奇怪的东西。选一件带走吧。");
     show(choices, true);
@@ -296,6 +302,7 @@ function setScene(scene) {
   }
 
   if (scene === "castle") {
+    sceneUi.classList.add("castle-layout");
     state.playerX = W / 2;
     state.playerY = 0;
     state.playerVelocityY = 0;
@@ -304,7 +311,7 @@ function setScene(scene) {
     setAction("拔剑", () => {
       sound("hit");
       state.phase = "sword";
-      setDialog("公主", "等一下，不要伤害它。它没有伤害我，也不是真的想和你们打架。你们是不是带礼物来了，快打开看看。");
+      setDialog("公主", "等一下，它没有伤害我，也不是真的想和你们打架。你们是不是带礼物来了，快打开看看！");
       setAction("拿出宝物", () => setScene("branch"));
     });
   }
@@ -362,17 +369,19 @@ function attackGuard() {
   state.attackStartedAt = state.elapsed;
   state.attackConnected = Math.abs(state.playerX - state.guardX) <= 30;
   if (state.attackConnected) state.guardHits += 1;
-  sound("hit");
 
   if (state.attackConnected && state.guardHits >= 3) {
     state.phase = "finisher";
     state.finisherStartedAt = state.elapsed;
+    state.treasureX = state.guardX;
+    show(gameControls, false);
     setDialog("旁白", "一刀两断，如意神剑");
     show(dialog, false);
     setPrompt("");
     sound("magic");
     later(() => setScene("treasure"), 5300);
   } else {
+    sound("hit");
     if (!state.attackConnected) setPrompt("挥剑落空了，靠近小兵再攻击");
     later(() => {
       state.phase = "idle";
@@ -533,6 +542,7 @@ function restartGame() {
   state.treasure = null;
   state.coupleStep = 0;
   state.warriorName = "";
+  state.treasureX = 0;
   warriorNameInput.value = "";
   document.querySelector("#scene-ui").classList.remove("hidden");
   setScene("title");
@@ -1079,7 +1089,9 @@ function drawGuardScene(time) {
     if (finisherTime >= 1 && finisherTime < 3) {
       drawFinisherSword(warriorX + 8, groundY - state.playerY - 22, swordScale, actionProgress);
     }
-    drawFinisherBubble(princeX, groundY - state.playerY - 98);
+    if (finisherTime < 3) {
+      drawFinisherBubble(princeX, groundY - state.playerY - 98);
+    }
 
     return;
   }
@@ -1100,9 +1112,9 @@ function drawGuardScene(time) {
 function drawTreasureScene(time) {
   drawForest(time * 0.08, false);
   const groundY = Math.round(H * 0.59);
-  drawGoldenChest(W * 0.66, groundY, 0.8);
-  drawHuman(W * 0.26, groundY, 1.35, "prince", 0, 1);
-  drawHuman(W * 0.42, groundY, 1.35, "warrior", 0, 1);
+  drawGoldenChest(state.treasureX || W * 0.66, groundY, 0.8);
+  drawHuman(state.playerX + FOREST_PARTY.companionOffset, groundY, 1.4, "prince", 0, 1);
+  drawHuman(state.playerX, groundY, 1.45, "warrior", 0, 1);
 }
 
 function drawCastleInterior(time) {
@@ -1170,13 +1182,25 @@ function drawBranchScene(time) {
 
 function drawRevealScene(time) {
   drawCastleInterior(time);
-  drawHuman(W * 0.27, H * 0.61, 1.45, "princess", 0);
-  drawHuman(W * 0.73, H * 0.61, 1.45, "prince", 0, -1);
   const progress = state.phase === "cat" ? 1 : Math.min(1, state.sceneElapsed / 1.4);
-  const scale = 3.1 - progress * 1.35;
-  const mood = progress > 0.72 ? "cat" : "threat";
+  const scale = 3.1 - progress * 2.38;
+  const mood = state.phase === "cat" ? "cat" : "threat";
   const flickerX = state.phase === "shrinking" && Math.floor(time * 14) % 2 === 0 ? 2 : 0;
-  drawMonster(W / 2 + flickerX, H * 0.67, mood === "cat" ? 0.72 : scale, mood);
+  const lineupProgress = Math.max(0, Math.min(1, (progress - 0.55) / 0.45));
+  const partyBase = H * 0.74;
+  const princessX = W / 2 - 18 - lineupProgress * 20;
+  const princeX = W / 2 + 18 - lineupProgress * 18;
+  const monsterBase = H * (0.6 + progress * 0.07);
+
+  if (mood === "cat") {
+    drawHuman(W / 2 - 38, partyBase, 1.7, "princess", 0, 1);
+    drawHuman(W / 2, partyBase, 1.7, "prince", 0, 1);
+    drawMonster(W / 2 + 34, partyBase, 0.72, mood);
+  } else {
+    drawMonster(W / 2 + flickerX, monsterBase, scale, mood);
+    drawHuman(princessX, partyBase, 1.45 + lineupProgress * 0.25, "princess", 0, 1);
+    drawHuman(princeX, partyBase, 1.45 + lineupProgress * 0.25, "prince", 0, 1);
+  }
 }
 
 function drawCoupleScene(time, photoMode = false) {
@@ -1185,7 +1209,7 @@ function drawCoupleScene(time, photoMode = false) {
   drawTree(15, H * 0.74, 2.5, 0);
   drawTree(W - 14, H * 0.74, 2.65, 1);
   drawCastle(W / 2, H * 0.73 + 5, Math.min(1.78, 1.48 + (H - 384) / 270), true);
-  const baseY = H * 0.79;
+  const baseY = H * 0.72;
   drawHuman(W / 2 - 15, baseY, 1.75, "prince", 0);
   drawHuman(W / 2 + 16, baseY, 1.75, "princess", 0, -1);
   pixel(W / 2 - 4, baseY - 15, 8, 3, COLORS.gold);
