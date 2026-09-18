@@ -7,6 +7,7 @@ const GAME_CONFIG = Object.freeze({
   date: "2026 年 X 月 X 日",
   venue: "XX 酒店",
   catName: "猫咪",
+  welcomePhoto: "./welcome-photo.png",
   shareText: "接受任务，穿过森林，揭开城堡怪物的秘密。",
 });
 
@@ -72,10 +73,18 @@ const primaryLabel = document.querySelector("#primary-label");
 const skipAction = document.querySelector("#skip-action");
 const flash = document.querySelector("#flash");
 const poster = document.querySelector("#poster");
+const posterPortrait = document.querySelector(".poster-portrait");
 const posterCanvas = document.querySelector("#poster-canvas");
 const shareAction = document.querySelector("#share-action");
 const replayAction = document.querySelector("#replay-action");
 const shareTip = document.querySelector("#share-tip");
+
+const welcomePhoto = new Image();
+const welcomePhotoUrl = `${GAME_CONFIG.welcomePhoto}?v=${Date.now()}`;
+welcomePhoto.onload = () => {
+  if (state.scene === "poster") drawPosterPortrait();
+};
+welcomePhoto.src = welcomePhotoUrl;
 
 let W = 216;
 let H = 384;
@@ -1229,6 +1238,32 @@ function drawCoupleScene(time, photoMode = false) {
 
 function drawPosterPortrait() {
   const portraitCtx = posterCanvas.getContext("2d");
+  if (welcomePhoto.complete && welcomePhoto.naturalWidth > 0) {
+    posterPortrait.classList.add("photo-mode");
+    poster.classList.add("photo-mode");
+    poster.style.setProperty("--welcome-photo", `url("${welcomePhotoUrl}")`);
+    const canvasWidth = posterCanvas.width;
+    const canvasHeight = posterCanvas.height;
+    const imageRatio = welcomePhoto.naturalWidth / welcomePhoto.naturalHeight;
+    const canvasRatio = canvasWidth / canvasHeight;
+    let sourceWidth = welcomePhoto.naturalWidth;
+    let sourceHeight = welcomePhoto.naturalHeight;
+    let sourceX = 0;
+    let sourceY = 0;
+    if (imageRatio > canvasRatio) {
+      sourceWidth = welcomePhoto.naturalHeight * canvasRatio;
+      sourceX = (welcomePhoto.naturalWidth - sourceWidth) / 2;
+    } else {
+      sourceHeight = welcomePhoto.naturalWidth / canvasRatio;
+      sourceY = (welcomePhoto.naturalHeight - sourceHeight) / 2;
+    }
+    portraitCtx.imageSmoothingEnabled = true;
+    portraitCtx.drawImage(welcomePhoto, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, canvasWidth, canvasHeight);
+    return;
+  }
+  posterPortrait.classList.remove("photo-mode");
+  poster.classList.remove("photo-mode");
+  poster.style.removeProperty("--welcome-photo");
   portraitCtx.imageSmoothingEnabled = false;
   portraitCtx.fillStyle = COLORS.sky;
   portraitCtx.fillRect(0, 0, 160, 144);

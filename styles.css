@@ -482,7 +482,7 @@ button {
     radial-gradient(circle at 50% 16%, #3a2744 0, #17162d 48%, #080c18 100%);
   color: var(--cream);
   text-align: center;
-  animation: poster-in 700ms steps(7, end) both;
+  animation: poster-in 700ms ease-out both;
 }
 
 .poster::before,
@@ -544,7 +544,86 @@ button {
   display: block;
   width: 100%;
   height: auto;
-  image-rendering: pixelated;
+  image-rendering: auto;
+}
+
+.poster.photo-mode {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  align-items: stretch;
+  justify-content: stretch;
+  padding: calc(14px + var(--safe-top)) 14px calc(14px + var(--safe-bottom));
+  overflow: hidden;
+  background: #11192a;
+}
+
+.poster.photo-mode::before {
+  display: block;
+  content: "";
+  position: relative;
+  inset: auto;
+  z-index: 0;
+  grid-row: 1;
+  width: 100%;
+  max-width: 100%;
+  min-height: 0;
+  border: 0;
+  border-radius: 14px;
+  background-color: #080c18;
+  background-image: var(--welcome-photo);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  box-shadow: 0 8px 28px rgb(0 0 0 / 28%);
+}
+
+.poster.photo-mode .poster-portrait,
+.poster.photo-mode .poster-kicker,
+.poster.photo-mode .poster-invite,
+.poster.photo-mode h2,
+.poster.photo-mode .poster-rule,
+.poster.photo-mode .poster-date,
+.poster.photo-mode .poster-venue,
+.poster.photo-mode .poster-ending,
+.poster.photo-mode .share-tip {
+  display: none;
+}
+
+.poster.photo-mode::after {
+  display: none;
+}
+
+.poster.photo-mode .poster-stars {
+  display: none;
+}
+
+.poster.photo-mode .poster-actions {
+  position: relative;
+  right: auto;
+  bottom: auto;
+  z-index: 2;
+  grid-row: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  width: 100%;
+  max-width: 100%;
+  margin: 12px 0 0;
+  padding: 0;
+  gap: 10px;
+}
+
+.poster.photo-mode .poster-button {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 12px;
+  font-size: 13px;
+  background: rgb(30 40 59 / 96%);
+  border-color: rgb(242 184 75 / 72%);
+  text-shadow: 1px 1px 0 var(--shadow);
+}
+
+.poster.photo-mode .poster-button.primary {
+  background: rgb(183 53 47 / 96%);
 }
 
 .poster-invite {
