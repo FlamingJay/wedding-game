@@ -656,7 +656,7 @@ function resetSignatureEditor() {
   document.querySelectorAll("[data-signature-tab]").forEach(tab => tab.classList.toggle("active", tab.dataset.signatureTab === "draw"));
   show(drawPanel, true);
   show(typePanel, false);
-  signaturePhoto.loading = "lazy";
+  signaturePhoto.loading = "eager";
   signaturePhoto.decoding = "async";
   signaturePhoto.src = signaturePhotoUrl;
   signaturePhoto.onerror = () => {

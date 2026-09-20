@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, unlink, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { randomUUID } from "node:crypto";
 import { fileURLToPath } from "node:url";
@@ -8,6 +8,7 @@ const root = dirname(fileURLToPath(import.meta.url));
 const port = Number(process.env.PORT || 8787);
 const frontendOrigin = process.env.FRONTEND_ORIGIN || "http://127.0.0.1:4173";
 const dataFile = resolve(root, process.env.DATA_FILE || "./data/blessings.json");
+const signatureDir = resolve(root, process.env.SIGNATURE_DIR || "./data/signatures");
 const maxBodyBytes = 1_500_000;
 
 const send = (response, status, payload, extraHeaders = {}) => {
@@ -65,8 +66,8 @@ const validateBlessing = (payload) => {
   const position = payload.position && typeof payload.position === "object" ? payload.position : {};
   if (!text && !signatureDataUrl) throw Object.assign(new Error("text or signatureDataUrl is required"), { statusCode: 400 });
   if (text.length > 200) throw Object.assign(new Error("text must be 200 characters or fewer"), { statusCode: 400 });
-  if (signatureDataUrl && !/^data:image\/(png|jpeg);base64,/.test(signatureDataUrl)) {
-    throw Object.assign(new Error("signatureDataUrl must be a PNG or JPEG data URL"), { statusCode: 400 });
+  if (signatureDataUrl && !/^data:image\/png;base64,/.test(signatureDataUrl)) {
+    throw Object.assign(new Error("signatureDataUrl must be a PNG data URL"), { statusCode: 400 });
   }
   return {
     text,
@@ -76,6 +77,26 @@ const validateBlessing = (payload) => {
       y: Number.isFinite(Number(position.y)) ? Math.min(1, Math.max(0, Number(position.y))) : 0.8,
     },
   };
+};
+
+const toPublicBlessing = (blessing) => {
+  const { signatureDataUrl, ...metadata } = blessing;
+  return {
+    ...metadata,
+    ...(signatureDataUrl ? { signatureUrl: `/api/blessings/${blessing.id}/signature.png` } : {}),
+  };
+};
+
+const saveSignature = async (id, signatureDataUrl) => {
+  if (!signatureDataUrl) return null;
+  const encoded = signatureDataUrl.slice("data:image/png;base64,".length);
+  const signature = Buffer.from(encoded, "base64");
+  if (!signature.length || signature.length > maxBodyBytes) {
+    throw Object.assign(new Error("signature image is too large"), { statusCode: 413 });
+  }
+  await mkdir(signatureDir, { recursive: true });
+  await writeFile(resolve(signatureDir, `${id}.png`), signature, { flag: "wx" });
+  return `/api/blessings/${id}/signature.png`;
 };
 
 const server = http.createServer(async (request, response) => {
@@ -89,22 +110,44 @@ const server = http.createServer(async (request, response) => {
 
     if (request.method === "POST" && url.pathname === "/api/blessings") {
       const payload = validateBlessing(await readJsonBody(request));
-      const blessing = { id: randomUUID(), ...payload, createdAt: new Date().toISOString() };
+      const id = randomUUID();
+      const signatureUrl = await saveSignature(id, payload.signatureDataUrl);
+      const { signatureDataUrl, ...metadata } = payload;
+      const blessing = { id, ...metadata, ...(signatureUrl ? { signatureUrl } : {}), createdAt: new Date().toISOString() };
       const blessings = await readBlessings();
-      blessings.push(blessing);
-      await saveBlessings(blessings);
-      return send(response, 201, { data: blessing });
+      try {
+        blessings.push(blessing);
+        await saveBlessings(blessings);
+      } catch (error) {
+        if (signatureUrl) await unlink(resolve(signatureDir, `${id}.png`)).catch(() => {});
+        throw error;
+      }
+      return send(response, 201, { data: toPublicBlessing(blessing) });
     }
 
     if (request.method === "GET" && url.pathname === "/api/blessings") {
       const blessings = await readBlessings();
-      return send(response, 200, { data: blessings });
+      return send(response, 200, { data: blessings.map(toPublicBlessing) });
+    }
+
+    const signatureMatch = url.pathname.match(/^\/api\/blessings\/([^/]+)\/signature\.png$/);
+    if (request.method === "GET" && signatureMatch) {
+      const blessing = (await readBlessings()).find(item => item.id === signatureMatch[1]);
+      if (!blessing || !blessing.signatureUrl) return send(response, 404, { error: "Signature not found" });
+      const signature = await readFile(resolve(signatureDir, `${blessing.id}.png`));
+      response.writeHead(200, {
+        "Content-Type": "image/png",
+        "Cache-Control": "public, max-age=31536000, immutable",
+        "Access-Control-Allow-Origin": frontendOrigin,
+        "Content-Disposition": `inline; filename="signature-${blessing.id}.png"`,
+      });
+      return response.end(signature);
     }
 
     const match = url.pathname.match(/^\/api\/blessings\/([^/]+)$/);
     if (request.method === "GET" && match) {
       const blessing = (await readBlessings()).find(item => item.id === match[1]);
-      return blessing ? send(response, 200, { data: blessing }) : send(response, 404, { error: "Blessing not found" });
+      return blessing ? send(response, 200, { data: toPublicBlessing(blessing) }) : send(response, 404, { error: "Blessing not found" });
     }
 
     return send(response, 404, { error: "Not found" });
