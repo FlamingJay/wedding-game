@@ -124,6 +124,7 @@ const lightboxImage = document.querySelector("#lightbox-image");
 const closeLightbox = document.querySelector("#close-lightbox");
 const blessingText = document.querySelector("#blessing-text");
 const signatureStatus = document.querySelector("#signature-status");
+const blessingSent = document.querySelector("#blessing-sent");
 const drawPanel = document.querySelector("#draw-panel");
 const typePanel = document.querySelector("#type-panel");
 
@@ -411,7 +412,6 @@ function setScene(scene) {
     state.playerX = W / 2;
     state.playerY = 0;
     state.playerVelocityY = 0;
-    show(gameControls, true);
     setDialog("旁白", "城堡大门缓缓打开。黑暗中，一双巨大的眼睛睁开了。");
     setAction("拔剑", () => {
       sound("hit");
@@ -714,6 +714,8 @@ function resetSignatureEditor() {
     signaturePhoto.src = GAME_CONFIG.welcomePhoto;
   };
   signatureStatus.textContent = "";
+  show(blessingSent, false);
+  document.querySelector("#submit-signature").disabled = false;
 }
 
 function getPadPoint(event) {
@@ -731,17 +733,29 @@ async function submitSignature() {
     signatureStatus.textContent = "请先写下签名或输入祝福。";
     return;
   }
-  signatureStatus.textContent = "正在保存……";
-  try {
-    const response = await fetch(`${GAME_CONFIG.apiBase}/api/blessings`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text, signatureDataUrl }),
-    });
+  signatureStatus.textContent = "正在发送……";
+  const submitButton = document.querySelector("#submit-signature");
+  const animationDuration = 3200;
+  submitButton.disabled = true;
+  show(blessingSent, true);
+  const animationTimer = new Promise(resolve => window.setTimeout(resolve, animationDuration));
+  const request = fetch(`${GAME_CONFIG.apiBase}/api/blessings`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text, signatureDataUrl }),
+  }).then(response => {
     if (!response.ok) throw new Error("save failed");
-    signatureStatus.textContent = "祝福已保存，感谢你的心意！";
+  });
+  try {
+    await Promise.all([request, animationTimer]);
+    signatureStatus.textContent = "";
+    show(blessingSent, false);
+    closeFeature();
   } catch {
-    signatureStatus.textContent = "暂时无法连接服务，祝福仍可在本页继续预览。";
+    await animationTimer;
+    show(blessingSent, false);
+    submitButton.disabled = false;
+    signatureStatus.textContent = "";
   }
 }
 

@@ -13,6 +13,8 @@
   --shadow: #03070d;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --game-control-size: 54px;
+  --game-control-bottom: clamp(54px, 9dvh, 78px);
 }
 
 * {
@@ -307,26 +309,26 @@ button {
 
 .scene-ui.gameplay-layout .prompt {
   position: absolute;
-  bottom: calc(76px + var(--safe-bottom));
+  bottom: calc(var(--game-control-bottom) + var(--game-control-size) + 22px + var(--safe-bottom));
   margin: 0;
 }
 
 .scene-ui.castle-layout .dialog {
   position: absolute;
-  bottom: calc(148px + var(--safe-bottom));
+  bottom: calc(92px + var(--safe-bottom));
   margin: 0;
 }
 
 .scene-ui.castle-layout .primary-action {
   position: absolute;
-  bottom: calc(78px + var(--safe-bottom));
+  bottom: calc(22px + var(--safe-bottom));
   margin: 0;
 }
 
 .game-controls {
   position: absolute;
   right: 14px;
-  bottom: calc(16px + var(--safe-bottom));
+  bottom: calc(var(--game-control-bottom) + var(--safe-bottom));
   left: 14px;
   z-index: 5;
   display: flex;
@@ -343,9 +345,11 @@ button {
 }
 
 .game-controls button {
-  min-width: 48px;
-  min-height: 46px;
-  padding: 7px 10px;
+  display: inline-grid;
+  place-items: center;
+  width: var(--game-control-size);
+  height: var(--game-control-size);
+  padding: 0;
   border: 3px solid var(--cream);
   border-radius: 0;
   background: rgb(5 10 19 / 88%);
@@ -790,6 +794,10 @@ button {
 }
 
 @media (max-height: 700px) {
+  :root {
+    --game-control-bottom: 42px;
+  }
+
   .scene-ui {
     padding-right: 14px;
     padding-left: 14px;
@@ -904,6 +912,18 @@ button {
 .blessing-wall-preview { background: #f4dca2; box-shadow: 4px 4px 0 var(--red-dark); }
 .blessing-wall-preview img { object-fit: contain; background: #f4dca2; }
 .feature-status { min-height: 18px; margin: -4px 0 0; color: var(--gold); font-size: 12px; }
+.blessing-sent { position: absolute; inset: 0; z-index: 5; display: grid; place-items: center; overflow: hidden; background: rgb(8 17 31 / 88%); pointer-events: none; }
+.blessing-sent p { position: absolute; top: 54%; margin: 0; color: var(--cream); font-size: 16px; font-weight: 800; letter-spacing: .12em; text-shadow: 2px 2px 0 var(--shadow); animation: blessing-sent-text 560ms 2600ms ease-out both; }
+.launch-ground { position: absolute; right: 8%; bottom: 8%; left: 8%; height: 9px; border: 2px solid #aeb7c0; background: linear-gradient(90deg, transparent, #59636d 12%, #d9e0e5 50%, #59636d 88%, transparent); box-shadow: 0 5px 0 #252c33, 0 0 18px rgb(174 183 192 / 32%); }
+.rocket { position: absolute; left: 50%; bottom: calc(8% + 9px); z-index: 1; width: 76px; height: 140px; overflow: visible; transform: translateX(-50%); animation: rocket-launch 2500ms cubic-bezier(.72,.02,.98,.42) both; }
+.rocket-body { fill: url(#rocket-metal); stroke: #e6edf2; stroke-width: 3; }
+.rocket-window { fill: #28536d; stroke: #d9e0e5; stroke-width: 3; }
+.rocket-stripe { fill: #4b555f; }
+.rocket-fin { fill: #59636d; stroke: #d9e0e5; stroke-width: 3; }
+.rocket-flame { fill: #ff9d32; stroke: #fff1c7; stroke-width: 2; transform-origin: 40px 112px; animation: rocket-flame 180ms ease-in-out infinite alternate; }
+@keyframes rocket-launch { 0%, 17% { opacity: 1; transform: translate(-50%, 0); } 34% { transform: translate(-50%, -4vh); } 76% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -116vh); } }
+@keyframes rocket-flame { from { transform: scaleY(.75); opacity: .7; } to { transform: scaleY(1.15); opacity: 1; } }
+@keyframes blessing-sent-text { 0% { opacity: 0; transform: translateY(8px); } 100% { opacity: 1; transform: translateY(0); } }
 .image-lightbox { position: absolute; inset: 0; z-index: 30; display: flex; align-items: center; justify-content: center; padding: calc(24px + var(--safe-top)) 18px calc(24px + var(--safe-bottom)); background: rgb(3 7 13 / 92%); }
 .image-lightbox img { display: block; max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 0 0 3px var(--gold), 8px 8px 0 var(--red-dark); }
 .lightbox-close { position: absolute; top: calc(12px + var(--safe-top)); right: 12px; z-index: 1; width: 42px; height: 42px; border: 2px solid var(--gold); background: var(--night); color: var(--cream); font-size: 28px; line-height: 1; cursor: pointer; }

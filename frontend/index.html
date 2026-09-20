@@ -12,7 +12,7 @@
     <meta property="og:description" content="What We Find Along the Way" />
     <meta property="og:image" content="./assets/welcome-photo.png" />
     <title>Treasure — What We Find Along the Way</title>
-    <link rel="stylesheet" href="./styles.css?v=20260920-5" />
+    <link rel="stylesheet" href="./styles.css?v=20260920-14" />
   </head>
   <body>
     <!--
@@ -151,9 +151,30 @@
         </div>
         <div class="feature-actions">
           <button class="feature-button" data-close-feature type="button">返回</button>
-          <button id="submit-signature" class="feature-button primary" type="button">保存祝福</button>
+          <button id="submit-signature" class="feature-button primary" type="button">发射祝福</button>
         </div>
         <p id="signature-status" class="feature-status" role="status"></p>
+        <div id="blessing-sent" class="blessing-sent hidden" aria-live="polite" aria-label="祝福已发射">
+          <div class="launch-ground" aria-hidden="true"></div>
+          <svg class="rocket" viewBox="0 0 80 140" aria-hidden="true">
+            <defs>
+              <linearGradient id="rocket-metal" x1="0" x2="1">
+                <stop offset="0" stop-color="#5f6872" />
+                <stop offset=".22" stop-color="#d9e0e5" />
+                <stop offset=".5" stop-color="#ffffff" />
+                <stop offset=".78" stop-color="#aeb7c0" />
+                <stop offset="1" stop-color="#4b555f" />
+              </linearGradient>
+            </defs>
+            <path class="rocket-flame" d="M31 112c0 14 4 22 9 28 5-6 9-14 9-28z" />
+            <path class="rocket-fin" d="M25 83 7 105h22z" />
+            <path class="rocket-fin" d="M55 83 73 105H51z" />
+            <path class="rocket-body" d="M40 8C22 22 18 43 20 82c5 10 35 10 40 0 2-39-2-60-20-74z" />
+            <path class="rocket-window" d="M40 35a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" />
+            <path class="rocket-stripe" d="M20 67h40v10H20z" />
+          </svg>
+          <p>祝福已发射</p>
+        </div>
       </section>
 
       <div id="image-lightbox" class="image-lightbox hidden" role="dialog" aria-modal="true" aria-label="查看祝福墙图片">
@@ -170,6 +191,6 @@
       </noscript>
     </main>
 
-    <script src="./game.js?v=20260920-5" defer></script>
+    <script src="./game.js?v=20260920-10" defer></script>
   </body>
 </html>
