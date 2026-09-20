@@ -10,9 +10,9 @@
     <meta property="og:type" content="website" />
     <meta property="og:title" content="勇士、公主与那只猫" />
     <meta property="og:description" content="接受任务，穿过森林，揭开城堡怪物的秘密。" />
-    <meta property="og:image" content="./share-card.png" />
+    <meta property="og:image" content="./assets/welcome-photo.png" />
     <title>勇士、公主与那只猫</title>
-    <link rel="stylesheet" href="./styles.css?v=20260918-10" />
+    <link rel="stylesheet" href="./styles.css?v=20260920-3" />
   </head>
   <body>
     <!--
@@ -23,6 +23,9 @@
       - 首版使用原创 Canvas 像素画，不复刻任何具体红白机游戏资产。
     -->
     <main id="app" class="app" aria-live="polite">
+      <audio id="background-music" preload="auto" loop aria-hidden="true">
+        <source src="./assets/music/background.mp3" type="audio/mpeg" />
+      </audio>
       <canvas id="game-canvas" width="216" height="384" aria-label="婚礼像素冒险游戏画面"></canvas>
 
       <div class="screen-shade" aria-hidden="true"></div>
@@ -99,11 +102,65 @@
         <p id="wedding-venue" class="poster-venue">XX 酒店</p>
         <p class="poster-ending">谢谢你，勇士。<br />新的故事，等你来见证。</p>
         <div class="poster-actions">
-          <button id="share-action" class="poster-button primary" type="button">分享给朋友</button>
-          <button id="replay-action" class="poster-button" type="button">再玩一次</button>
+          <button id="signature-action" class="poster-button primary" type="button">祝福签名</button>
+          <button id="album-action" class="poster-button" type="button">时光相册</button>
         </div>
         <p id="share-tip" class="share-tip hidden">请点击微信右上角“···”，分享到朋友圈</p>
       </section>
+
+      <section id="album-screen" class="feature-screen hidden" aria-label="时光相册">
+        <div class="feature-header">
+          <p class="feature-eyebrow">HAPPY WEDDING</p>
+          <button class="feature-close" data-close-feature type="button">×</button>
+        </div>
+        <div class="film-viewer">
+          <div class="film-frame"><img id="album-image" alt="相册照片" /></div>
+          <p id="album-caption" class="film-caption"></p>
+        </div>
+        <div id="film-strip" class="film-strip" aria-label="照片时间轴"></div>
+        <div class="feature-actions">
+          <button id="album-prev" class="feature-button" type="button">上一张</button>
+          <span id="album-count" class="feature-count"></span>
+          <button id="album-next" class="feature-button primary" type="button">下一张</button>
+        </div>
+      </section>
+
+      <section id="signature-screen" class="feature-screen hidden" aria-label="祝福签名">
+        <div class="feature-header">
+          <p class="feature-eyebrow">A NOTE FOR THE COUPLE</p>
+          <h2>祝福签名</h2>
+          <button class="feature-close" data-close-feature type="button">×</button>
+        </div>
+        <div class="signature-tabs" role="tablist">
+          <button class="signature-tab active" data-signature-tab="draw" type="button">手写祝福</button>
+          <button class="signature-tab" data-signature-tab="type" type="button">打字祝福</button>
+        </div>
+        <div id="draw-panel" class="signature-panel">
+          <p class="feature-hint">在下方写下你的名字或祝福</p>
+          <canvas id="signature-pad" width="720" height="300" aria-label="手写签名板"></canvas>
+          <button id="clear-signature" class="text-button" type="button">清除重写</button>
+        </div>
+        <div id="type-panel" class="signature-panel hidden">
+          <p class="feature-hint">在下方写下你的名字或祝福</p>
+          <textarea id="blessing-text" maxlength="200" placeholder="祝你们永远幸福……"></textarea>
+        </div>
+        <div class="signature-composer">
+          <p class="feature-hint">点击图片可放大查看祝福墙</p>
+          <div id="signature-preview" class="signature-preview blessing-wall-preview">
+            <img id="signature-photo" alt="祝福墙图片预览" />
+          </div>
+        </div>
+        <div class="feature-actions">
+          <button class="feature-button" data-close-feature type="button">返回</button>
+          <button id="submit-signature" class="feature-button primary" type="button">保存祝福</button>
+        </div>
+        <p id="signature-status" class="feature-status" role="status"></p>
+      </section>
+
+      <div id="image-lightbox" class="image-lightbox hidden" role="dialog" aria-modal="true" aria-label="查看祝福墙图片">
+        <button id="close-lightbox" class="lightbox-close" type="button" aria-label="关闭图片预览">×</button>
+        <img id="lightbox-image" alt="祝福墙大图" />
+      </div>
 
       <div id="rotate-notice" class="rotate-notice hidden">
         <p>请竖屏体验这段冒险</p>
@@ -114,6 +171,6 @@
       </noscript>
     </main>
 
-    <script src="./game.js?v=20260918-6" defer></script>
+    <script src="./game.js?v=20260920-2" defer></script>
   </body>
 </html>

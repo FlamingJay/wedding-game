@@ -473,7 +473,6 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   min-height: 100%;
   padding: calc(30px + var(--safe-top)) 24px calc(22px + var(--safe-bottom));
   overflow-y: auto;
@@ -695,6 +694,7 @@ button {
   z-index: 2;
   display: flex;
   gap: 10px;
+  justify-content: center;
 }
 
 .poster-button {
@@ -824,3 +824,74 @@ button {
     scroll-behavior: auto !important;
   }
 }
+
+.feature-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 16;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: calc(18px + var(--safe-top)) 18px calc(16px + var(--safe-bottom));
+  overflow: auto;
+  background: radial-gradient(circle at 50% 0%, #49314b 0, #161b32 52%, #090e1b 100%);
+  color: var(--cream);
+  text-align: center;
+  isolation: isolate;
+  animation: poster-in 420ms ease-out both;
+}
+
+.feature-header { position: relative; flex: 0 0 auto; }
+.feature-eyebrow {
+  margin: 0 0 2px;
+  color: var(--gold);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .14em;
+}
+#album-screen .feature-eyebrow {
+  margin: 0;
+  color: #ffe4a0;
+  font-family: "Bodoni 72", "Didot", "Baskerville", "Times New Roman", serif;
+  font-size: clamp(20px, 6vw, 28px);
+  font-style: italic;
+  font-weight: 700;
+  letter-spacing: .12em;
+  line-height: 1.1;
+  text-shadow: 2px 2px 0 var(--red-dark), 0 0 12px rgb(242 184 75 / 30%);
+  white-space: nowrap;
+}
+.feature-header h2 { margin: 0; font-family: "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 28px; }
+.feature-close { position: absolute; top: -8px; right: -5px; width: 38px; height: 38px; border: 2px solid var(--gold); background: rgb(8 17 31 / 80%); color: var(--cream); font-size: 26px; line-height: 1; }
+.film-viewer { display: flex; min-height: 0; flex: 1 1 auto; flex-direction: column; justify-content: center; gap: 8px; }
+.film-frame { position: relative; width: min(100%, 330px); aspect-ratio: 4 / 3; margin: 18px auto 0; padding: 14px 12px; background: #e9d39d; border: 4px solid var(--gold); box-shadow: 7px 7px 0 var(--red-dark); }
+.film-frame::before, .film-frame::after { content: ""; position: absolute; left: 0; right: 0; height: 8px; background: repeating-linear-gradient(90deg, #f5e7bb 0 12px, transparent 12px 20px); }
+.film-frame::before { top: -12px; } .film-frame::after { bottom: -12px; }
+.film-frame img { position: relative; z-index: 1; display: block; width: 100%; height: 100%; object-fit: cover; background: #203552; }
+.film-caption { display: none; }
+.film-strip { display: flex; flex: 0 0 auto; gap: 8px; width: 100%; padding: 10px 8px; overflow-x: auto; background: rgb(0 0 0 / 28%); border-top: 2px solid rgb(242 184 75 / 55%); border-bottom: 2px solid rgb(242 184 75 / 55%); }
+.film-thumb { flex: 0 0 70px; height: 52px; padding: 3px; border: 2px solid transparent; background: #e9d39d; }
+.film-thumb.active { border-color: var(--gold); transform: translateY(-3px); }
+.film-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.feature-actions { display: flex; align-items: center; justify-content: center; gap: 10px; flex: 0 0 auto; }
+.feature-button { min-height: 42px; min-width: 96px; padding: 9px 13px; border: 3px solid var(--cream); background: var(--night); color: var(--cream); font-weight: 800; }
+.feature-button.primary { background: var(--red); }
+.feature-count { min-width: 50px; color: var(--paper); font-size: 12px; }
+.signature-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; flex: 0 0 auto; }
+.signature-tab { min-height: 40px; border: 2px solid rgb(242 184 75 / 60%); background: rgb(8 17 31 / 72%); color: var(--paper); }
+.signature-tab.active { background: var(--gold); color: var(--night); font-weight: 800; }
+.signature-panel { flex: 0 0 auto; min-height: 200px; }
+.feature-hint { margin: 0 0 7px; color: var(--paper); font-size: 12px; }
+#signature-pad { display: block; width: 100%; height: 150px; border: 3px solid var(--gold); background: #fff9e8; touch-action: none; }
+.text-button { margin-top: 5px; border: 0; background: transparent; color: var(--gold); text-decoration: underline; font-size: 12px; }
+#blessing-text { display: block; width: 100%; height: 150px; resize: none; padding: 12px; border: 3px solid var(--gold); background: #fff9e8; color: var(--night); font: 15px/1.6 "PingFang SC", "Microsoft YaHei", sans-serif; }
+.signature-composer { min-height: 0; flex: 1 1 auto; }
+.signature-preview { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border: 3px solid var(--gold); background: #203552; cursor: zoom-in; }
+.signature-preview img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.blessing-wall-preview { background: #f4dca2; box-shadow: 4px 4px 0 var(--red-dark); }
+.blessing-wall-preview img { object-fit: contain; background: #f4dca2; }
+.feature-status { min-height: 18px; margin: -4px 0 0; color: var(--gold); font-size: 12px; }
+.image-lightbox { position: absolute; inset: 0; z-index: 30; display: flex; align-items: center; justify-content: center; padding: calc(24px + var(--safe-top)) 18px calc(24px + var(--safe-bottom)); background: rgb(3 7 13 / 92%); }
+.image-lightbox img { display: block; max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 0 0 3px var(--gold), 8px 8px 0 var(--red-dark); }
+.lightbox-close { position: absolute; top: calc(12px + var(--safe-top)); right: 12px; z-index: 1; width: 42px; height: 42px; border: 2px solid var(--gold); background: var(--night); color: var(--cream); font-size: 28px; line-height: 1; cursor: pointer; }
+@media (min-width: 440px) { .feature-screen { padding-left: 28px; padding-right: 28px; } .film-frame { width: min(100%, 380px); } }

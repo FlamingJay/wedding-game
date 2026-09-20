@@ -7,7 +7,33 @@ const GAME_CONFIG = Object.freeze({
   date: "2026 年 X 月 X 日",
   venue: "XX 酒店",
   catName: "猫咪",
-  welcomePhoto: "./welcome-photo.png",
+  welcomePhoto: "./assets/welcome-photo.png",
+  signaturePhoto: "./assets/signature/signature-photo.jpg",
+  apiBase: window.WEDDING_GAME_API || "http://127.0.0.1:8787",
+  albumPhotos: [
+    { full: "./assets/album/full/3M9A9334.jpg", thumb: "./assets/album/thumbs/3M9A9334.jpg" },
+    { full: "./assets/album/full/3M9A9339.jpg", thumb: "./assets/album/thumbs/3M9A9339.jpg" },
+    { full: "./assets/album/full/3M9A9346.jpg", thumb: "./assets/album/thumbs/3M9A9346.jpg" },
+    { full: "./assets/album/full/3M9A9388.jpg", thumb: "./assets/album/thumbs/3M9A9388.jpg" },
+    { full: "./assets/album/full/3M9A9440.jpg", thumb: "./assets/album/thumbs/3M9A9440.jpg" },
+    { full: "./assets/album/full/3M9A9451.jpg", thumb: "./assets/album/thumbs/3M9A9451.jpg" },
+    { full: "./assets/album/full/3M9A9452.jpg", thumb: "./assets/album/thumbs/3M9A9452.jpg" },
+    { full: "./assets/album/full/3M9A9499.jpg", thumb: "./assets/album/thumbs/3M9A9499.jpg" },
+    { full: "./assets/album/full/3M9A9505.jpg", thumb: "./assets/album/thumbs/3M9A9505.jpg" },
+    { full: "./assets/album/full/3M9A9521.jpg", thumb: "./assets/album/thumbs/3M9A9521.jpg" },
+    { full: "./assets/album/full/3M9A9541.jpg", thumb: "./assets/album/thumbs/3M9A9541.jpg" },
+    { full: "./assets/album/full/3M9A9551.jpg", thumb: "./assets/album/thumbs/3M9A9551.jpg" },
+    { full: "./assets/album/full/3M9A9580.jpg", thumb: "./assets/album/thumbs/3M9A9580.jpg" },
+    { full: "./assets/album/full/3M9A9584.jpg", thumb: "./assets/album/thumbs/3M9A9584.jpg" },
+    { full: "./assets/album/full/3M9A9599.jpg", thumb: "./assets/album/thumbs/3M9A9599.jpg" },
+    { full: "./assets/album/full/3M9A9601.jpg", thumb: "./assets/album/thumbs/3M9A9601.jpg" },
+    { full: "./assets/album/full/3M9A9604.jpg", thumb: "./assets/album/thumbs/3M9A9604.jpg" },
+    { full: "./assets/album/full/3M9A9609.jpg", thumb: "./assets/album/thumbs/3M9A9609.jpg" },
+    { full: "./assets/album/full/3M9A9617.jpg", thumb: "./assets/album/thumbs/3M9A9617.jpg" },
+    { full: "./assets/album/full/3M9A9697.JPG", thumb: "./assets/album/thumbs/3M9A9697.JPG" },
+    { full: "./assets/album/full/3M9A9746.JPG", thumb: "./assets/album/thumbs/3M9A9746.JPG" },
+    { full: "./assets/album/full/3M9A9752.JPG", thumb: "./assets/album/thumbs/3M9A9752.JPG" }
+  ],
   shareText: "接受任务，穿过森林，揭开城堡怪物的秘密。",
 });
 
@@ -55,6 +81,7 @@ const FOREST_PARTY = Object.freeze({
 });
 
 const app = document.querySelector("#app");
+const backgroundMusic = document.querySelector("#background-music");
 const canvas = document.querySelector("#game-canvas");
 const ctx = canvas.getContext("2d", { alpha: false });
 const sceneUi = document.querySelector("#scene-ui");
@@ -75,12 +102,29 @@ const flash = document.querySelector("#flash");
 const poster = document.querySelector("#poster");
 const posterPortrait = document.querySelector(".poster-portrait");
 const posterCanvas = document.querySelector("#poster-canvas");
-const shareAction = document.querySelector("#share-action");
-const replayAction = document.querySelector("#replay-action");
+const signatureAction = document.querySelector("#signature-action");
+const albumAction = document.querySelector("#album-action");
 const shareTip = document.querySelector("#share-tip");
+const albumScreen = document.querySelector("#album-screen");
+const signatureScreen = document.querySelector("#signature-screen");
+const albumImage = document.querySelector("#album-image");
+const albumCaption = document.querySelector("#album-caption");
+const filmStrip = document.querySelector("#film-strip");
+const albumCount = document.querySelector("#album-count");
+const signaturePad = document.querySelector("#signature-pad");
+const signaturePhoto = document.querySelector("#signature-photo");
+const signaturePreview = document.querySelector("#signature-preview");
+const imageLightbox = document.querySelector("#image-lightbox");
+const lightboxImage = document.querySelector("#lightbox-image");
+const closeLightbox = document.querySelector("#close-lightbox");
+const blessingText = document.querySelector("#blessing-text");
+const signatureStatus = document.querySelector("#signature-status");
+const drawPanel = document.querySelector("#draw-panel");
+const typePanel = document.querySelector("#type-panel");
 
 const welcomePhoto = new Image();
 const welcomePhotoUrl = `${GAME_CONFIG.welcomePhoto}?v=${Date.now()}`;
+const signaturePhotoUrl = `${GAME_CONFIG.signaturePhoto}?v=${Date.now()}`;
 welcomePhoto.onload = () => {
   if (state.scene === "poster") drawPosterPortrait();
 };
@@ -92,6 +136,10 @@ let lastFrame = performance.now();
 let paused = false;
 let audioContext = null;
 let timers = [];
+let albumIndex = 0;
+let signatureDrawing = false;
+let signatureHasInk = false;
+let musicStarted = false;
 
 const state = {
   scene: "title",
@@ -242,6 +290,34 @@ function sound(name) {
   }
 }
 
+function startBackgroundMusic() {
+  if (musicStarted || !backgroundMusic) return;
+  backgroundMusic.volume = 0.32;
+  const playback = backgroundMusic.play();
+  if (playback && typeof playback.catch === "function") {
+    playback.then(() => {
+      musicStarted = true;
+    }).catch(() => {
+      // Browsers may require a user gesture before allowing audio playback.
+    });
+  } else {
+    musicStarted = true;
+  }
+}
+
+startBackgroundMusic();
+const unlockMusic = () => {
+  startBackgroundMusic();
+  if (musicStarted) {
+    document.removeEventListener("pointerdown", unlockMusic);
+    document.removeEventListener("keydown", unlockMusic);
+    document.removeEventListener("touchstart", unlockMusic);
+  }
+};
+document.addEventListener("pointerdown", unlockMusic, { passive: true });
+document.addEventListener("keydown", unlockMusic, { passive: true });
+document.addEventListener("touchstart", unlockMusic, { passive: true });
+
 function setScene(scene) {
   clearTimers();
   resetUi();
@@ -365,6 +441,8 @@ function setScene(scene) {
   if (scene === "poster") {
     skipAction.classList.add("hidden");
     document.querySelector("#scene-ui").classList.add("hidden");
+    show(albumScreen, false);
+    show(signatureScreen, false);
     show(poster, true);
     fillPoster();
   } else {
@@ -526,6 +604,95 @@ function fillPoster() {
   document.querySelector("#wedding-date").textContent = GAME_CONFIG.date;
   document.querySelector("#wedding-venue").textContent = GAME_CONFIG.venue;
   drawPosterPortrait();
+}
+
+function openFeature(screen) {
+  show(poster, false);
+  show(albumScreen, screen === "album");
+  show(signatureScreen, screen === "signature");
+  if (screen === "album") renderAlbum();
+  if (screen === "signature") resetSignatureEditor();
+}
+
+function closeFeature() {
+  show(albumScreen, false);
+  show(signatureScreen, false);
+  show(poster, true);
+}
+
+
+function renderAlbum() {
+  const photos = GAME_CONFIG.albumPhotos;
+  const photo = photos[albumIndex] || { full: GAME_CONFIG.welcomePhoto, thumb: GAME_CONFIG.welcomePhoto };
+  albumImage.loading = "eager";
+  albumImage.decoding = "async";
+  albumImage.fetchPriority = "high";
+  albumImage.src = photo.full;
+  albumCaption.textContent = "";
+  albumCount.textContent = `${albumIndex + 1} / ${photos.length}`;
+  filmStrip.replaceChildren();
+  photos.forEach((source, index) => {
+    const thumb = document.createElement("button");
+    thumb.type = "button";
+    thumb.className = `film-thumb${index === albumIndex ? " active" : ""}`;
+    thumb.innerHTML = `<img src="${source.thumb}" alt="第 ${index + 1} 张照片" loading="lazy" decoding="async" />`;
+    thumb.addEventListener("click", () => {
+      albumIndex = index;
+      renderAlbum();
+    });
+    filmStrip.appendChild(thumb);
+  });
+}
+
+function clearSignaturePad() {
+  const signatureContext = signaturePad.getContext("2d");
+  signatureContext.clearRect(0, 0, signaturePad.width, signaturePad.height);
+  signatureHasInk = false;
+}
+
+function resetSignatureEditor() {
+  clearSignaturePad();
+  blessingText.value = "";
+  document.querySelectorAll("[data-signature-tab]").forEach(tab => tab.classList.toggle("active", tab.dataset.signatureTab === "draw"));
+  show(drawPanel, true);
+  show(typePanel, false);
+  signaturePhoto.loading = "lazy";
+  signaturePhoto.decoding = "async";
+  signaturePhoto.src = signaturePhotoUrl;
+  signaturePhoto.onerror = () => {
+    signaturePhoto.onerror = null;
+    signaturePhoto.src = GAME_CONFIG.welcomePhoto;
+  };
+  signatureStatus.textContent = "";
+}
+
+function getPadPoint(event) {
+  const rect = signaturePad.getBoundingClientRect();
+  return {
+    x: (event.clientX - rect.left) * signaturePad.width / rect.width,
+    y: (event.clientY - rect.top) * signaturePad.height / rect.height,
+  };
+}
+
+async function submitSignature() {
+  const text = blessingText.value.trim();
+  const signatureDataUrl = signatureHasInk ? signaturePad.toDataURL("image/png") : null;
+  if (!text && !signatureDataUrl) {
+    signatureStatus.textContent = "请先写下签名或输入祝福。";
+    return;
+  }
+  signatureStatus.textContent = "正在保存……";
+  try {
+    const response = await fetch(`${GAME_CONFIG.apiBase}/api/blessings`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, signatureDataUrl }),
+    });
+    if (!response.ok) throw new Error("save failed");
+    signatureStatus.textContent = "祝福已保存，感谢你的心意！";
+  } catch {
+    signatureStatus.textContent = "暂时无法连接服务，祝福仍可在本页继续预览。";
+  }
 }
 
 async function shareGame() {
@@ -1352,9 +1519,11 @@ function frame(now) {
     state.elapsed += delta;
     state.sceneElapsed += delta;
     state.screenShake = Math.max(0, state.screenShake - delta * 19);
-    updateGameplay(delta);
-    updateParticles(delta);
-    drawScene(state.elapsed);
+    if (state.scene !== "poster") {
+      updateGameplay(delta);
+      updateParticles(delta);
+      drawScene(state.elapsed);
+    }
   }
   requestAnimationFrame(frame);
 }
@@ -1364,8 +1533,67 @@ document.querySelectorAll(".choice").forEach((button) => {
 });
 
 skipAction.addEventListener("click", showPosterDirectly);
-shareAction.addEventListener("click", shareGame);
-replayAction.addEventListener("click", restartGame);
+signatureAction.addEventListener("click", () => openFeature("signature"));
+albumAction.addEventListener("click", () => openFeature("album"));
+document.querySelectorAll("[data-close-feature]").forEach(button => button.addEventListener("click", closeFeature));
+document.querySelector("#album-prev").addEventListener("click", () => {
+  albumIndex = (albumIndex - 1 + GAME_CONFIG.albumPhotos.length) % GAME_CONFIG.albumPhotos.length;
+  renderAlbum();
+});
+document.querySelector("#album-next").addEventListener("click", () => {
+  albumIndex = (albumIndex + 1) % GAME_CONFIG.albumPhotos.length;
+  renderAlbum();
+});
+document.querySelectorAll("[data-signature-tab]").forEach(button => button.addEventListener("click", () => {
+  document.querySelectorAll("[data-signature-tab]").forEach(tab => tab.classList.toggle("active", tab === button));
+  const drawing = button.dataset.signatureTab === "draw";
+  show(drawPanel, drawing);
+  show(typePanel, !drawing);
+}));
+document.querySelector("#clear-signature").addEventListener("click", clearSignaturePad);
+document.querySelector("#submit-signature").addEventListener("click", submitSignature);
+
+function openImageLightbox() {
+  lightboxImage.src = signaturePhoto.currentSrc || signaturePhoto.src;
+  show(imageLightbox, true);
+  closeLightbox.focus();
+}
+
+function closeImageLightbox() {
+  show(imageLightbox, false);
+}
+
+signaturePreview.addEventListener("click", openImageLightbox);
+closeLightbox.addEventListener("click", closeImageLightbox);
+imageLightbox.addEventListener("click", event => {
+  if (event.target === imageLightbox) closeImageLightbox();
+});
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && !imageLightbox.classList.contains("hidden")) closeImageLightbox();
+});
+
+signaturePad.addEventListener("pointerdown", event => {
+  signatureDrawing = true;
+  signaturePad.setPointerCapture(event.pointerId);
+  const point = getPadPoint(event);
+  const signatureContext = signaturePad.getContext("2d");
+  signatureContext.beginPath();
+  signatureContext.moveTo(point.x, point.y);
+});
+signaturePad.addEventListener("pointermove", event => {
+  if (!signatureDrawing) return;
+  const point = getPadPoint(event);
+  const signatureContext = signaturePad.getContext("2d");
+  signatureContext.lineTo(point.x, point.y);
+  signatureContext.strokeStyle = "#71232d";
+  signatureContext.lineWidth = 7;
+  signatureContext.lineCap = "round";
+  signatureContext.lineJoin = "round";
+  signatureContext.stroke();
+  signatureHasInk = true;
+});
+signaturePad.addEventListener("pointerup", () => { signatureDrawing = false; });
+signaturePad.addEventListener("pointercancel", () => { signatureDrawing = false; });
 
 document.querySelectorAll("[data-control]").forEach((button) => {
   const control = button.dataset.control;

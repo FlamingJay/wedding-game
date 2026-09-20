@@ -9,4 +9,4 @@ build/
 .env
 .env.*
 !.env.example
-
+backend/data/

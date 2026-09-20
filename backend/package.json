@@ -1,0 +1,14 @@
+{
+  "name": "wedding-game-api",
+  "private": true,
+  "version": "0.1.0",
+  "description": "API service for the Wedding Game blessing features",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
