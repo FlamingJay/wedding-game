@@ -10,8 +10,8 @@ const GAME_CONFIG = Object.freeze({
   welcomePhoto: "./assets/welcome-photo.png",
   signaturePhoto: "./assets/signature/signature-photo.jpg",
   music: Object.freeze({
-    game: "./assets/music/game.mp3",
-    ending: "./assets/music/ending.mp3",
+    game: Object.freeze({ src: "./assets/music/game.mp3", volume: 0.55 }),
+    ending: Object.freeze({ src: "./assets/music/ending.mp3", volume: 0.65 }),
   }),
   apiBase: window.WEDDING_GAME_API || "https://wedding-game-production-9604.up.railway.app",
   albumPhotos: [
@@ -301,7 +301,6 @@ function sound(name) {
 function startBackgroundMusic() {
   if (!backgroundMusic || !currentMusicTrack) return;
   backgroundMusic.loop = true;
-  backgroundMusic.volume = 0.32;
   const playback = backgroundMusic.play();
   if (playback && typeof playback.catch === "function") {
     playback.then(() => {
@@ -314,12 +313,13 @@ function startBackgroundMusic() {
   }
 }
 
-function setBackgroundMusic(track) {
-  if (!backgroundMusic || !track) return;
-  if (currentMusicTrack !== track) {
-    currentMusicTrack = track;
+function setBackgroundMusic(trackConfig) {
+  if (!backgroundMusic || !trackConfig) return;
+  backgroundMusic.volume = trackConfig.volume;
+  if (currentMusicTrack !== trackConfig.src) {
+    currentMusicTrack = trackConfig.src;
     musicStarted = false;
-    backgroundMusic.src = track;
+    backgroundMusic.src = trackConfig.src;
     backgroundMusic.currentTime = 0;
     backgroundMusic.load();
   }
