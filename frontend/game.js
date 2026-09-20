@@ -1,7 +1,7 @@
 "use strict";
 
 const GAME_CONFIG = Object.freeze({
-  title: "营救公主",
+  title: "Treasure",
   groom: "新郎",
   bride: "新娘",
   date: "2026 年 X 月 X 日",
@@ -34,7 +34,7 @@ const GAME_CONFIG = Object.freeze({
     { full: "./assets/album/full/3M9A9746.webp", thumb: "./assets/album/thumbs/3M9A9746.webp" },
     { full: "./assets/album/full/3M9A9752.webp", thumb: "./assets/album/thumbs/3M9A9752.webp" }
   ],
-  shareText: "接受任务，穿过森林，揭开城堡怪物的秘密。",
+  shareText: "What We Find Along the Way",
 });
 
 const COLORS = Object.freeze({

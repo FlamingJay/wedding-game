@@ -109,54 +109,65 @@ button {
 
 .title-card {
   position: absolute;
-  inset: calc(8vh + var(--safe-top)) 18px auto;
+  inset: calc(7vh + var(--safe-top)) 18px auto;
   text-align: center;
   color: var(--cream);
-  text-shadow: 3px 3px 0 var(--red-dark), 6px 6px 0 var(--shadow);
-  animation: title-arrive 520ms steps(5, end) both;
+  animation: title-arrive 700ms ease-out both;
 }
 
 .title-card::before,
 .title-card::after {
   content: "";
   display: block;
-  width: 58%;
-  height: 4px;
-  margin: 0 auto 16px;
-  background: var(--gold);
-  box-shadow: 0 6px 0 var(--red), 0 12px 0 var(--cream);
+  width: min(68vw, 290px);
+  height: 1px;
+  margin: 0 auto 18px;
+  background: linear-gradient(90deg, transparent, var(--gold) 24%, var(--cream) 50%, var(--gold) 76%, transparent);
+  box-shadow: 0 5px 0 rgb(242 184 75 / 18%);
 }
 
 .title-card::after {
-  margin: 18px auto 0;
-  box-shadow: 0 -6px 0 var(--red), 0 -12px 0 var(--cream);
+  margin: 20px auto 0;
+  box-shadow: 0 -5px 0 rgb(242 184 75 / 18%);
 }
 
-.eyebrow {
-  margin: 0 0 10px;
+.title-kicker {
+  margin: 0 0 12px;
   color: var(--gold);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-shadow: 2px 2px 0 var(--shadow);
+  font-family: "Courier New", monospace;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .34em;
+  text-indent: .34em;
+  text-shadow: 0 2px 0 var(--shadow);
 }
 
 .title-card h1 {
   margin: 0;
-  font-size: clamp(31px, 10vw, 48px);
-  line-height: 1.18;
-  letter-spacing: 0.06em;
-  text-wrap: balance;
+  color: #f6a34a;
+  background: linear-gradient(120deg, #ffe0a0 0%, #ffb44f 28%, #ee7c2f 64%, #c94e28 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: "Bodoni 72", Didot, Baskerville, "Times New Roman", serif;
+  font-size: clamp(60px, 19vw, 88px);
+  font-style: italic;
+  font-weight: 500;
+  line-height: .95;
+  letter-spacing: -.035em;
+  filter: drop-shadow(2px 3px 0 var(--red-dark)) drop-shadow(0 10px 18px rgb(0 0 0 / 65%));
 }
 
-.subtitle {
-  margin: 14px 0 0;
+.title-subtitle {
+  margin: 16px 0 0;
   color: var(--paper);
-  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-shadow: 2px 2px 0 var(--shadow);
+  font-family: Baskerville, "Times New Roman", serif;
+  font-size: clamp(12px, 3.6vw, 15px);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: .08em;
+  line-height: 1.45;
+  text-shadow: 0 2px 8px var(--shadow);
 }
 
 .dialog {
