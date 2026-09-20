@@ -9,30 +9,30 @@ const GAME_CONFIG = Object.freeze({
   catName: "猫咪",
   welcomePhoto: "./assets/welcome-photo.png",
   signaturePhoto: "./assets/signature/signature-photo.jpg",
-  apiBase: window.WEDDING_GAME_API || "http://127.0.0.1:8787",
+  apiBase: window.WEDDING_GAME_API || "http://wedding-game-production-9604.up.railway.app",
   albumPhotos: [
-    { full: "./assets/album/full/3M9A9334.jpg", thumb: "./assets/album/thumbs/3M9A9334.jpg" },
-    { full: "./assets/album/full/3M9A9339.jpg", thumb: "./assets/album/thumbs/3M9A9339.jpg" },
-    { full: "./assets/album/full/3M9A9346.jpg", thumb: "./assets/album/thumbs/3M9A9346.jpg" },
-    { full: "./assets/album/full/3M9A9388.jpg", thumb: "./assets/album/thumbs/3M9A9388.jpg" },
-    { full: "./assets/album/full/3M9A9440.jpg", thumb: "./assets/album/thumbs/3M9A9440.jpg" },
-    { full: "./assets/album/full/3M9A9451.jpg", thumb: "./assets/album/thumbs/3M9A9451.jpg" },
-    { full: "./assets/album/full/3M9A9452.jpg", thumb: "./assets/album/thumbs/3M9A9452.jpg" },
-    { full: "./assets/album/full/3M9A9499.jpg", thumb: "./assets/album/thumbs/3M9A9499.jpg" },
-    { full: "./assets/album/full/3M9A9505.jpg", thumb: "./assets/album/thumbs/3M9A9505.jpg" },
-    { full: "./assets/album/full/3M9A9521.jpg", thumb: "./assets/album/thumbs/3M9A9521.jpg" },
-    { full: "./assets/album/full/3M9A9541.jpg", thumb: "./assets/album/thumbs/3M9A9541.jpg" },
-    { full: "./assets/album/full/3M9A9551.jpg", thumb: "./assets/album/thumbs/3M9A9551.jpg" },
-    { full: "./assets/album/full/3M9A9580.jpg", thumb: "./assets/album/thumbs/3M9A9580.jpg" },
-    { full: "./assets/album/full/3M9A9584.jpg", thumb: "./assets/album/thumbs/3M9A9584.jpg" },
-    { full: "./assets/album/full/3M9A9599.jpg", thumb: "./assets/album/thumbs/3M9A9599.jpg" },
-    { full: "./assets/album/full/3M9A9601.jpg", thumb: "./assets/album/thumbs/3M9A9601.jpg" },
-    { full: "./assets/album/full/3M9A9604.jpg", thumb: "./assets/album/thumbs/3M9A9604.jpg" },
-    { full: "./assets/album/full/3M9A9609.jpg", thumb: "./assets/album/thumbs/3M9A9609.jpg" },
-    { full: "./assets/album/full/3M9A9617.jpg", thumb: "./assets/album/thumbs/3M9A9617.jpg" },
-    { full: "./assets/album/full/3M9A9697.JPG", thumb: "./assets/album/thumbs/3M9A9697.JPG" },
-    { full: "./assets/album/full/3M9A9746.JPG", thumb: "./assets/album/thumbs/3M9A9746.JPG" },
-    { full: "./assets/album/full/3M9A9752.JPG", thumb: "./assets/album/thumbs/3M9A9752.JPG" }
+    { full: "./assets/album/full/3M9A9334.webp", thumb: "./assets/album/thumbs/3M9A9334.webp" },
+    { full: "./assets/album/full/3M9A9339.webp", thumb: "./assets/album/thumbs/3M9A9339.webp" },
+    { full: "./assets/album/full/3M9A9346.webp", thumb: "./assets/album/thumbs/3M9A9346.webp" },
+    { full: "./assets/album/full/3M9A9388.webp", thumb: "./assets/album/thumbs/3M9A9388.webp" },
+    { full: "./assets/album/full/3M9A9440.webp", thumb: "./assets/album/thumbs/3M9A9440.webp" },
+    { full: "./assets/album/full/3M9A9451.webp", thumb: "./assets/album/thumbs/3M9A9451.webp" },
+    { full: "./assets/album/full/3M9A9452.webp", thumb: "./assets/album/thumbs/3M9A9452.webp" },
+    { full: "./assets/album/full/3M9A9499.webp", thumb: "./assets/album/thumbs/3M9A9499.webp" },
+    { full: "./assets/album/full/3M9A9505.webp", thumb: "./assets/album/thumbs/3M9A9505.webp" },
+    { full: "./assets/album/full/3M9A9521.webp", thumb: "./assets/album/thumbs/3M9A9521.webp" },
+    { full: "./assets/album/full/3M9A9541.webp", thumb: "./assets/album/thumbs/3M9A9541.webp" },
+    { full: "./assets/album/full/3M9A9551.webp", thumb: "./assets/album/thumbs/3M9A9551.webp" },
+    { full: "./assets/album/full/3M9A9580.webp", thumb: "./assets/album/thumbs/3M9A9580.webp" },
+    { full: "./assets/album/full/3M9A9584.webp", thumb: "./assets/album/thumbs/3M9A9584.webp" },
+    { full: "./assets/album/full/3M9A9599.webp", thumb: "./assets/album/thumbs/3M9A9599.webp" },
+    { full: "./assets/album/full/3M9A9601.webp", thumb: "./assets/album/thumbs/3M9A9601.webp" },
+    { full: "./assets/album/full/3M9A9604.webp", thumb: "./assets/album/thumbs/3M9A9604.webp" },
+    { full: "./assets/album/full/3M9A9609.webp", thumb: "./assets/album/thumbs/3M9A9609.webp" },
+    { full: "./assets/album/full/3M9A9617.webp", thumb: "./assets/album/thumbs/3M9A9617.webp" },
+    { full: "./assets/album/full/3M9A9697.webp", thumb: "./assets/album/thumbs/3M9A9697.webp" },
+    { full: "./assets/album/full/3M9A9746.webp", thumb: "./assets/album/thumbs/3M9A9746.webp" },
+    { full: "./assets/album/full/3M9A9752.webp", thumb: "./assets/album/thumbs/3M9A9752.webp" }
   ],
   shareText: "接受任务，穿过森林，揭开城堡怪物的秘密。",
 });
@@ -108,6 +108,7 @@ const shareTip = document.querySelector("#share-tip");
 const albumScreen = document.querySelector("#album-screen");
 const signatureScreen = document.querySelector("#signature-screen");
 const albumImage = document.querySelector("#album-image");
+const filmFrame = document.querySelector(".film-frame");
 const albumCaption = document.querySelector("#album-caption");
 const filmStrip = document.querySelector("#film-strip");
 const albumCount = document.querySelector("#album-count");
@@ -137,6 +138,7 @@ let paused = false;
 let audioContext = null;
 let timers = [];
 let albumIndex = 0;
+let albumLoadToken = 0;
 let signatureDrawing = false;
 let signatureHasInk = false;
 let musicStarted = false;
@@ -624,10 +626,9 @@ function closeFeature() {
 function renderAlbum() {
   const photos = GAME_CONFIG.albumPhotos;
   const photo = photos[albumIndex] || { full: GAME_CONFIG.welcomePhoto, thumb: GAME_CONFIG.welcomePhoto };
-  albumImage.loading = "eager";
-  albumImage.decoding = "async";
-  albumImage.fetchPriority = "high";
-  albumImage.src = photo.full;
+  const loadToken = ++albumLoadToken;
+  filmFrame.classList.add("is-loading");
+  albumImage.alt = `第 ${albumIndex + 1} 张相册照片`;
   albumCaption.textContent = "";
   albumCount.textContent = `${albumIndex + 1} / ${photos.length}`;
   filmStrip.replaceChildren();
@@ -641,6 +642,35 @@ function renderAlbum() {
       renderAlbum();
     });
     filmStrip.appendChild(thumb);
+  });
+
+  const nextImage = new Image();
+  nextImage.decoding = "async";
+  nextImage.fetchPriority = "high";
+  nextImage.onload = async () => {
+    if (typeof nextImage.decode === "function") await nextImage.decode().catch(() => {});
+    if (loadToken !== albumLoadToken) return;
+    albumImage.src = nextImage.src;
+    filmFrame.classList.remove("is-loading");
+    preloadAlbumNeighbors(albumIndex);
+  };
+  nextImage.onerror = () => {
+    if (loadToken === albumLoadToken) filmFrame.classList.remove("is-loading");
+  };
+  nextImage.src = photo.full;
+}
+
+function preloadAlbumNeighbors(index) {
+  const photos = GAME_CONFIG.albumPhotos;
+  [
+    photos[(index - 1 + photos.length) % photos.length],
+    photos[(index + 1) % photos.length],
+  ].forEach(photo => {
+    if (!photo) return;
+    const image = new Image();
+    image.decoding = "async";
+    image.fetchPriority = "low";
+    image.src = photo.full;
   });
 }
 

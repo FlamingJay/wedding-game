@@ -214,6 +214,86 @@ http://127.0.0.1:8787/health
 
 不要直接通过 `file://` 打开，因为浏览器对本地文件的图片加载、缓存和部分交互行为存在限制。
 
+## 线上部署
+
+当前采用前后端分离部署：前端部署到 Netlify，后端部署到 Railway。Netlify 只负责发布 `frontend/` 静态文件，不能直接运行 `backend/server.js` 这个常驻 Node.js 服务。
+
+### Railway 后端
+
+当前后端服务地址：
+
+```text
+https://wedding-game-production-9604.up.railway.app
+```
+
+Railway 服务配置：
+
+```text
+Root Directory: backend
+Start Command: npm start
+```
+
+建议为 Railway 服务添加持久化 Volume，并挂载到 `/data`。否则服务重新部署后，本地保存的祝福和签名文件可能丢失。
+
+Railway 环境变量：
+
+```text
+DATA_FILE=/data/blessings.json
+SIGNATURE_DIR=/data/signatures
+FRONTEND_ORIGIN=https://你的站点.netlify.app
+```
+
+`PORT` 不需要手动设置，Railway 会自动注入。部署后可访问以下地址检查服务状态：
+
+```text
+https://wedding-game-production-9604.up.railway.app/health
+```
+
+### 前端 API 地址
+
+部署 Netlify 前，需要将 `frontend/game.js` 中的 `GAME_CONFIG.apiBase` 从本地地址改为 Railway 地址：
+
+```js
+apiBase: window.WEDDING_GAME_API || "https://wedding-game-production-9604.up.railway.app",
+```
+
+修改后提交并推送到 GitHub，Netlify 重新部署后，前端提交的文字祝福和手写签名才会发送到线上后端。
+
+### Netlify 前端
+
+1. 在 Netlify 中选择 **Add new site** → **Import an existing project**。
+2. 绑定 GitHub，并选择当前仓库。
+3. 配置构建参数：
+
+```text
+Base directory: 留空
+Build command: 留空
+Publish directory: frontend
+Functions directory: 留空
+```
+
+当前前端是原生 HTML/CSS/JavaScript，不需要执行构建命令或安装依赖。部署完成后，Netlify 会直接发布 `frontend/index.html` 和 `frontend/assets/` 下的静态资源。
+
+### 推荐部署顺序
+
+1. 先在 Railway 部署 `backend/` 服务并配置持久化 Volume。
+2. 确认 `https://wedding-game-production-9604.up.railway.app/health` 返回正常结果。
+3. 修改 `frontend/game.js` 中的 `apiBase` 为 Railway 地址。
+4. 将修改推送到 GitHub。
+5. 在 Netlify 导入 GitHub 仓库，发布目录填写 `frontend`。
+6. 获得 Netlify 域名后，回到 Railway，将 `FRONTEND_ORIGIN` 改为实际 Netlify 域名。
+7. 重新部署 Railway，完成 CORS 配置。
+
+绑定 GitHub 后，之后每次推送到 `main` 分支，Netlify 和 Railway 都可以自动重新部署。
+
+### 上线验证
+
+- 访问 Netlify 页面，确认首页 Canvas 和剧情正常显示。
+- 点击“跳过剧情”，确认迎宾页和时光相册正常加载。
+- 打开“祝福签名”，确认祝福墙图片可以显示并放大查看。
+- 分别测试文字祝福和手写签名提交。
+- 确认 Railway Volume 中生成了 `/data/blessings.json` 和 `/data/signatures/<id>.png`。
+
 ## 前端性能说明
 
 - 相册缩略图使用懒加载和异步解码，不会在打开相册时强制加载所有照片。
@@ -231,8 +311,8 @@ http://127.0.0.1:8787/health
 - [x] 竖屏互动游戏首版完成
 - [x] 真实迎宾照接入和移动端适配完成
 - [ ] 新人真实信息待补充
-- [ ] 时光相册页面待开发
+- [x] 时光相册页面完成
 - [ ] 祝福签名和图片合成待开发
-- [x] 后端祝福收集服务开发版 API 完成（JSON 文件存储）
+- [x] 后端祝福收集服务完成（元数据 JSON + 独立 PNG 文件）
 - [x] 前端第一版“祝福签名”和“时光相册”页面完成
 - [ ] 生产数据库、对象存储、鉴权和内容审核待接入

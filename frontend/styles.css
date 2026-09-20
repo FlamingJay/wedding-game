@@ -868,6 +868,8 @@ button {
 .film-frame::before, .film-frame::after { content: ""; position: absolute; left: 0; right: 0; height: 8px; background: repeating-linear-gradient(90deg, #f5e7bb 0 12px, transparent 12px 20px); }
 .film-frame::before { top: -12px; } .film-frame::after { bottom: -12px; }
 .film-frame img { position: relative; z-index: 1; display: block; width: 100%; height: 100%; object-fit: cover; background: #203552; }
+.film-loading { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; background: rgb(11 16 32 / 72%); color: var(--cream); font-size: 13px; opacity: 0; pointer-events: none; }
+.film-frame.is-loading .film-loading { opacity: 1; }
 .film-caption { display: none; }
 .film-strip { display: flex; flex: 0 0 auto; gap: 8px; width: 100%; padding: 10px 8px; overflow-x: auto; background: rgb(0 0 0 / 28%); border-top: 2px solid rgb(242 184 75 / 55%); border-bottom: 2px solid rgb(242 184 75 / 55%); }
 .film-thumb { flex: 0 0 70px; height: 52px; padding: 3px; border: 2px solid transparent; background: #e9d39d; }
