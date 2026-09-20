@@ -9,6 +9,10 @@ const GAME_CONFIG = Object.freeze({
   catName: "猫咪",
   welcomePhoto: "./assets/welcome-photo.png",
   signaturePhoto: "./assets/signature/signature-photo.jpg",
+  music: Object.freeze({
+    game: "./assets/music/game.mp3",
+    ending: "./assets/music/ending.mp3",
+  }),
   apiBase: window.WEDDING_GAME_API || "https://wedding-game-production-9604.up.railway.app",
   albumPhotos: [
     { full: "./assets/album/full/3M9A9334.webp", thumb: "./assets/album/thumbs/3M9A9334.webp" },
@@ -142,6 +146,7 @@ let albumLoadToken = 0;
 let signatureDrawing = false;
 let signatureHasInk = false;
 let musicStarted = false;
+let currentMusicTrack = "";
 
 const state = {
   scene: "title",
@@ -293,7 +298,8 @@ function sound(name) {
 }
 
 function startBackgroundMusic() {
-  if (musicStarted || !backgroundMusic) return;
+  if (!backgroundMusic || !currentMusicTrack) return;
+  backgroundMusic.loop = true;
   backgroundMusic.volume = 0.32;
   const playback = backgroundMusic.play();
   if (playback && typeof playback.catch === "function") {
@@ -307,7 +313,18 @@ function startBackgroundMusic() {
   }
 }
 
-startBackgroundMusic();
+function setBackgroundMusic(track) {
+  if (!backgroundMusic || !track) return;
+  if (currentMusicTrack !== track) {
+    currentMusicTrack = track;
+    musicStarted = false;
+    backgroundMusic.src = track;
+    backgroundMusic.currentTime = 0;
+    backgroundMusic.load();
+  }
+  startBackgroundMusic();
+}
+
 const unlockMusic = () => {
   startBackgroundMusic();
   if (musicStarted) {
@@ -331,6 +348,7 @@ function setScene(scene) {
   state.particles = [];
 
   if (scene === "title") {
+    setBackgroundMusic(GAME_CONFIG.music.game);
     sceneUi.classList.add("title-layout");
     show(titleCard, true);
     skipAction.classList.add("hidden");
@@ -431,7 +449,7 @@ function setScene(scene) {
 
   if (scene === "couple") {
     state.coupleStep = 0;
-    setDialog("王子", "看来，你并不需要我来救。");
+    setDialog("王子", "竟然是周瑜！！哈哈...");
     setAction("继续", advanceCoupleDialog);
   }
 
@@ -441,6 +459,7 @@ function setScene(scene) {
   }
 
   if (scene === "poster") {
+    setBackgroundMusic(GAME_CONFIG.music.ending);
     skipAction.classList.add("hidden");
     document.querySelector("#scene-ui").classList.add("hidden");
     show(albumScreen, false);
@@ -579,8 +598,8 @@ function advanceCoupleDialog() {
   state.coupleStep += 1;
   sound("confirm");
   if (state.coupleStep === 1) {
-    setDialog("公主", "我不需要你来救。但接下来的路，我想和你一起走。");
-    primaryLabel.textContent = "一起出发";
+    setDialog("公主", "是啊，那我们一起回家吧~");
+    primaryLabel.textContent = "继续";
   } else {
     setScene("photo");
   }
