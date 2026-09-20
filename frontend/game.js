@@ -628,7 +628,7 @@ function renderAlbum() {
   const photo = photos[albumIndex] || { full: GAME_CONFIG.welcomePhoto, thumb: GAME_CONFIG.welcomePhoto };
   const loadToken = ++albumLoadToken;
   filmFrame.classList.add("is-loading");
-  albumImage.alt = `第 ${albumIndex + 1} 张相册照片`;
+  albumImage.alt = "";
   albumCaption.textContent = "";
   albumCount.textContent = `${albumIndex + 1} / ${photos.length}`;
   filmStrip.replaceChildren();
@@ -636,7 +636,8 @@ function renderAlbum() {
     const thumb = document.createElement("button");
     thumb.type = "button";
     thumb.className = `film-thumb${index === albumIndex ? " active" : ""}`;
-    thumb.innerHTML = `<img src="${source.thumb}" alt="第 ${index + 1} 张照片" loading="lazy" decoding="async" />`;
+    thumb.setAttribute("aria-label", `查看第 ${index + 1} 张照片`);
+    thumb.innerHTML = `<img src="${source.thumb}" alt="" loading="lazy" decoding="async" />`;
     thumb.addEventListener("click", () => {
       albumIndex = index;
       renderAlbum();
