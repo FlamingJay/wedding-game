@@ -9,7 +9,7 @@ const GAME_CONFIG = Object.freeze({
   catName: "猫咪",
   welcomePhoto: "./assets/welcome-photo.png",
   signaturePhoto: "./assets/signature/signature-photo.jpg",
-  apiBase: window.WEDDING_GAME_API || "http://wedding-game-production-9604.up.railway.app",
+  apiBase: window.WEDDING_GAME_API || "https://wedding-game-production-9604.up.railway.app",
   albumPhotos: [
     { full: "./assets/album/full/3M9A9334.webp", thumb: "./assets/album/thumbs/3M9A9334.webp" },
     { full: "./assets/album/full/3M9A9339.webp", thumb: "./assets/album/thumbs/3M9A9339.webp" },
