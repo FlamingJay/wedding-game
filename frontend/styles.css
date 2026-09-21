@@ -47,13 +47,19 @@ button {
 .app {
   position: relative;
   width: min(100vw, 480px);
-  height: 100dvh;
-  min-height: 560px;
+  height: 100vh;
+  min-height: 0;
   margin: 0 auto;
   overflow: hidden;
   isolation: isolate;
   background: var(--night);
   box-shadow: 0 0 60px rgb(0 0 0 / 65%);
+}
+
+@supports (height: 100dvh) {
+  .app {
+    height: 100dvh;
+  }
 }
 
 #game-canvas {
@@ -883,10 +889,10 @@ button {
 .feature-header h2 { margin: 0; font-family: "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 28px; }
 .feature-close { position: absolute; top: -8px; right: -5px; width: 38px; height: 38px; border: 2px solid var(--gold); background: rgb(8 17 31 / 80%); color: var(--cream); font-size: 26px; line-height: 1; }
 .film-viewer { display: flex; min-height: 0; flex: 1 1 auto; flex-direction: column; justify-content: center; gap: 8px; }
-.film-frame { position: relative; width: min(100%, 330px); aspect-ratio: 4 / 3; margin: 18px auto 0; padding: 14px 12px; background: #e9d39d; border: 4px solid var(--gold); box-shadow: 7px 7px 0 var(--red-dark); }
+.film-frame { position: relative; flex: 0 0 auto; width: min(100%, 330px); aspect-ratio: 4 / 3; margin: 18px auto 0; padding: 14px 12px; background: #e9d39d; border: 4px solid var(--gold); box-shadow: 7px 7px 0 var(--red-dark); }
 .film-frame::before, .film-frame::after { content: ""; position: absolute; left: 0; right: 0; height: 8px; background: repeating-linear-gradient(90deg, #f5e7bb 0 12px, transparent 12px 20px); }
 .film-frame::before { top: -12px; } .film-frame::after { bottom: -12px; }
-.film-frame img { position: relative; z-index: 1; display: block; width: 100%; height: 100%; object-fit: cover; background: #203552; }
+.film-frame img { position: relative; z-index: 1; display: block; width: 100%; height: 100%; object-fit: contain; background: #203552; }
 .film-loading { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; background: rgb(11 16 32 / 72%); color: var(--cream); font-size: 13px; opacity: 0; pointer-events: none; }
 .film-frame.is-loading .film-loading { opacity: 1; }
 .film-caption { display: none; }
@@ -927,4 +933,4 @@ button {
 .image-lightbox { position: absolute; inset: 0; z-index: 30; display: flex; align-items: center; justify-content: center; padding: calc(24px + var(--safe-top)) 18px calc(24px + var(--safe-bottom)); background: rgb(3 7 13 / 92%); }
 .image-lightbox img { display: block; max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 0 0 3px var(--gold), 8px 8px 0 var(--red-dark); }
 .lightbox-close { position: absolute; top: calc(12px + var(--safe-top)); right: 12px; z-index: 1; width: 42px; height: 42px; border: 2px solid var(--gold); background: var(--night); color: var(--cream); font-size: 28px; line-height: 1; cursor: pointer; }
-@media (min-width: 440px) { .feature-screen { padding-left: 28px; padding-right: 28px; } .film-frame { width: min(100%, 380px); } }
+@media (min-width: 440px) { .feature-screen { padding-left: 28px; padding-right: 28px; } }
